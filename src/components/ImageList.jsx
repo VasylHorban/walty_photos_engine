@@ -1,11 +1,6 @@
 import React from "react";
-import { Card, Col, Row } from "react-bootstrap";
-import styled from "styled-components";
-
-const StyledCol = styled(Col)`
-  margin-top: 1rem;
-  padding: 0.4rem;
-`;
+import { Card, Row } from "react-bootstrap";
+import StyledCol from "./../styled/ImageList/StyledCol";
 
 const ImageList = () => (
   <Row>

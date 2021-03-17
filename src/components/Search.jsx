@@ -1,30 +1,9 @@
 import React from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
-import styled from "styled-components";
+import { Form, Col } from "react-bootstrap";
+import StyledRow from '../styled/Search/StyledRow'
+import StyledTag from '../styled/Search/StyledTag'
+import StyledButton from '../styled/Search/StyledButton'
 
-const StyledRow = styled(Row)`
-  display: flex;
-  align-items: center;
-  margin-top: 1.5rem;
-  box-shadow: 0px 0px 7px -5px rgba(0, 0, 0, 0.95);
-  padding: 1rem;
-  border-radius: 0.4rem;
-`;
-
-const StyledButton = styled(Button)`
-  display: block;
-  margin: 0 auto;
-  margin-top: 1.5rem;
-`;
-
-const StyledTag = styled.span`
-  color: #ff1a1a;
-  margin-right: 0.5rem;
-  &:hover {
-    text-decoration: underline;
-    cursor : pointer
-  }
-`;
 
 const Search = () => (
   <>
