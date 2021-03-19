@@ -1,16 +1,25 @@
 import React from "react";
-import { Button } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
 import StyledWrapper from "../styled/LastSearch/StyledWrapper";
+import StyledTag from "../styled/LastSearch/StyledTag";
+import { setInput } from "../redux/search.reducer";
 
-const LastSearch = () => (
-  <StyledWrapper>
-    <h3>Last search</h3>
-    <div>
-      <Button variant="light">First old search</Button>
-      <Button variant="light">Second old search</Button>
-      <Button variant="light">Third old search</Button>
-    </div>
-  </StyledWrapper>
-);
+const LastSearch = () => {
+  const tags = useSelector(state => state.search.tagStorage);
+  const dispatch = useDispatch()
+  const onclickHendler = (tag) => {
+    dispatch(setInput(tag));
+  }
+  return (
+    <StyledWrapper>
+      <h3>Last search</h3>
+      <div>
+        {tags.map((tag) => (
+          <StyledTag key = {tag.id} onClick = {onclickHendler.bind(null,tag.text)} variant="light">#{tag.text}</StyledTag>
+        ))}
+      </div>
+    </StyledWrapper>
+  );
+};
 
 export default LastSearch;

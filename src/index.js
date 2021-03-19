@@ -1,20 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider, applyMiddleware } from "react-redux";
+import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
-import { combineReducers, createStore } from "redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
+import { BrowserRouter } from "react-router-dom";
 
-import searchReducer from "./search.reducer";
+import searchReducer from "./redux/search.reducer";
+import appReducer from "./redux/app.reducer";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./App";
-import store from "./redux/store";
 import { sagaWatcher } from "./redux/saga";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const reducers = combineReducers({
   search: searchReducer,
+  app: appReducer,
 });
 
 const store = createStore(reducers, applyMiddleware(sagaMiddleware));
@@ -23,9 +25,11 @@ sagaMiddleware.run(sagaWatcher);
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <BrowserRouter>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );
