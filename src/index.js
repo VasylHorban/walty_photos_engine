@@ -6,7 +6,7 @@ import { combineReducers, createStore, applyMiddleware } from "redux";
 import { BrowserRouter } from "react-router-dom";
 
 import searchReducer from "./redux/search.reducer";
-import appReducer from "./redux/app.reducer";
+import appReduser from "./redux/app.reducer";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./App";
@@ -14,10 +14,7 @@ import { sagaWatcher } from "./redux/saga";
 
 const sagaMiddleware = createSagaMiddleware();
 
-const reducers = combineReducers({
-  search: searchReducer,
-  app: appReducer,
-});
+const reducers = combineReducers({search: searchReducer, app: appReduser});
 
 const store = createStore(reducers, applyMiddleware(sagaMiddleware));
 

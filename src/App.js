@@ -1,16 +1,14 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import { Container } from "react-bootstrap";
-import { ImageList, LastSearch, Search } from "./components/index.js";
+import { ImageList, Search } from "./components/index.js";
 
 const App = () => {
   return (
     <Container>
-      <Search />
-      <LastSearch />
-
-      <Route path="/img/:tag?" render={() => <ImageList />} />
-
+      <Route path="/home" render={() => <Search />} />
+      <Route path="/img/:tags" render={(props) => <ImageList tags = {props.match.params.tags}/>} />
+      <Redirect path="/" to="/home" />
     </Container>
   );
 };
