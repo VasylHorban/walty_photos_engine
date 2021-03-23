@@ -1,15 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import StyledForm from "../styled/Search/StyledForm";
 import StyledButton from "../styled/Search/StyledButton";
 import { NavLink } from "react-router-dom";
 import LastSearch from "./LastSearch";
+import { cleanSearch, setInput } from "../redux/ducks/search";
 
 const Search = () => {
-  const [inputValue, setInputValue] = useState("");
+  const inputValue = useSelector((state) => state.search.inputValue);
+  const dispatch = useDispatch();
+
+  const generateAddressBar = () => {
+    let tags = inputValue !== ''? inputValue : "yellow flowers" 
+    return '/img/' + tags.split(' ').join('+')
+  }
   const onChangeHendler = (event) => {
-    setInputValue(event.target.value);
+    dispatch(setInput(event.target.value));
   };
 
+  useEffect(() => {
+    dispatch(cleanSearch());
+  }, []);
   return (
     <>
       <StyledForm>
@@ -23,10 +34,9 @@ const Search = () => {
           />
         </StyledForm.Group>
       </StyledForm>
-      <NavLink to={`/img/${inputValue}`}>
+      <NavLink to={generateAddressBar()}>
         <StyledButton>Search </StyledButton>
       </NavLink>
-
       <LastSearch />
     </>
   );

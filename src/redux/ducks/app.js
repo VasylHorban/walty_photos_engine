@@ -1,6 +1,7 @@
 const SET_ISFETHING = "APP/SET_ISFETHING";
 const SET_ALERT_TEXT = "APP/SET_ALERT_TEXT";
 const SET_ISALERT = "APP/SET_ISALERT";
+export const HIDE_ALERT = "APP/HIDE_ALERT";
 
 const initialState = {
   isFetching: false,
@@ -21,8 +22,6 @@ const appReduser = (state = initialState, action) => {
   }
 };
 
-export default appReduser;
-
 export const setIsFetching = (isFetching) => ({
   type: SET_ISFETHING,
   isFetching,
@@ -31,7 +30,11 @@ export const setIsAlert = (isAlert) => ({
   type: SET_ISALERT,
   isAlert,
 });
+export const hideAlert = () => ({type: HIDE_ALERT});
 export const setAlertText = (alertText) => ({
   type: SET_ALERT_TEXT,
   alertText,
 });
+
+export default appReduser;
+
