@@ -1,10 +1,12 @@
-import { Alert as AlertB} from "react-bootstrap";
-import StyledWrapper from "../styled/Alert/StyledWrapper";
+import React from 'react';
+import { Alert as AlertB } from 'react-bootstrap';
 
-const Alert = (props) => (
-  <StyledWrapper>
-    <AlertB variant="warning">{props.text}</AlertB>
-  </StyledWrapper>
+import { AlertWrapper } from '../styled';
+
+const Alert = ({ text }) => (
+  <AlertWrapper>
+    <AlertB variant="warning">{text}</AlertB>
+  </AlertWrapper>
 );
 
 export default Alert;

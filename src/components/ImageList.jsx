@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Row, Button } from "react-bootstrap";
-import Alert from "./Alert";
-import StyledCol from "../styled/ImageList/StyledCol";
-import StyledCard from "../styled/ImageList/StyledCard";
-import StyledLink from "../styled/ImageList/StyledLink";
-import { requestPhotos } from "../redux/ducks/search";
-import { hideAlert, setIsFetching } from "../redux/ducks/app";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Row, Button } from 'react-bootstrap';
 
-const ImageList = (props) => {
+import { requestPhotos } from '../redux/ducks/search';
+import { hideAlert, setIsFetching } from '../redux/ducks/app';
+import { Alert } from './index';
+import { StyledCol, StyledCard, StyledLink } from '../styled';
+
+const ImageList = ({ tags }) => {
   const [isSendRequest, setSendRequest] = useState(true);
-  const dispatch = useDispatch();
   const photos = useSelector((state) => state.search.photos);
   const isFetching = useSelector((state) => state.app.isFetching);
   const isAlert = useSelector((state) => state.app.isAlert);
   const alertText = useSelector((state) => state.app.alertText);
+  const dispatch = useDispatch();
 
-  const onScrollHendler = (e) => {
+  const onScrollHandler = (event) => {
+    let page = event.target.documentElement;
     if (
-      e.target.documentElement.scrollHeight -
-        (e.target.documentElement.scrollTop + window.innerHeight) <
-        100 &&
+      page.scrollHeight - (page.scrollTop + window.innerHeight) < 100 &&
       !isFetching
     ) {
       dispatch(setIsFetching(true));
@@ -33,14 +31,14 @@ const ImageList = (props) => {
   }, [isAlert]);
 
   useEffect(() => {
-    document.addEventListener("scroll", onScrollHendler);
+    document.addEventListener('scroll', onScrollHandler);
     return () => {
-      document.removeEventListener("scroll", onScrollHendler);
+      document.removeEventListener('scroll', onScrollHandler);
     };
   }, []);
 
   useEffect(() => {
-    if (isSendRequest) dispatch(requestPhotos(props.tags));
+    if (isSendRequest) dispatch(requestPhotos(tags));
     setSendRequest(false);
   }, [isSendRequest]);
 
