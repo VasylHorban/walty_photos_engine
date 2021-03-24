@@ -1,5 +1,5 @@
-import { Form } from "react-bootstrap";
-import styled from "styled-components";
+import { Form } from 'react-bootstrap';
+import styled from 'styled-components';
 
 const StyledForm = styled(Form)`
   margin-top: 1.5rem;

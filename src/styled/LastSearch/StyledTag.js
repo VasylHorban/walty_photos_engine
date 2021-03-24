@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Button } from "react-bootstrap";
+import styled from 'styled-components';
+import { Button } from 'react-bootstrap';
 
 const StyledTag = styled(Button)`
   color: #ff1a1a;

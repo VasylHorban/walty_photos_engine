@@ -1,5 +1,5 @@
-import { Col } from "react-bootstrap";
-import styled from "styled-components";
+import { Col } from 'react-bootstrap';
+import styled from 'styled-components';
 
 const StyledCol = styled(Col)`
   margin-top: 1rem;

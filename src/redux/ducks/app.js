@@ -1,12 +1,14 @@
-const SET_ISFETHING = "APP/SET_ISFETHING";
-const SET_ALERT_TEXT = "APP/SET_ALERT_TEXT";
-const SET_ISALERT = "APP/SET_ISALERT";
-export const HIDE_ALERT = "APP/HIDE_ALERT";
+import { put, delay } from 'redux-saga/effects';
+
+const SET_ISFETHING = 'APP/SET_ISFETHING';
+const SET_ALERT_TEXT = 'APP/SET_ALERT_TEXT';
+const SET_ISALERT = 'APP/SET_ISALERT';
+export const HIDE_ALERT = 'APP/HIDE_ALERT';
 
 const initialState = {
   isFetching: false,
   isAlert: false,
-  alertText: "",
+  alertText: '',
 };
 
 const appReduser = (state = initialState, action) => {
@@ -30,11 +32,15 @@ export const setIsAlert = (isAlert) => ({
   type: SET_ISALERT,
   isAlert,
 });
-export const hideAlert = () => ({type: HIDE_ALERT});
+export const hideAlert = () => ({ type: HIDE_ALERT });
 export const setAlertText = (alertText) => ({
   type: SET_ALERT_TEXT,
   alertText,
 });
 
-export default appReduser;
+export function* hidingAlert() {
+  yield delay(3000);
+  yield put(setIsAlert(false));
+}
 
+export default appReduser;
