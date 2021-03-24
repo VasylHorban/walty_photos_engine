@@ -6,4 +6,5 @@ const StyledButton = styled(Button)`
   margin: 0 auto;
   margin-top: 1.5rem;
 `;
+
 export default StyledButton;

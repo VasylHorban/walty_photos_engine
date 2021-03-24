@@ -7,4 +7,5 @@ const StyledForm = styled(Form)`
   padding: 1.5rem;
   border-radius: 0.4rem;
 `;
+
 export default StyledForm;

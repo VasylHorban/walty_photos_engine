@@ -6,4 +6,5 @@ const StyledTag = styled(Button)`
   margin: 0.5rem;
   cursor: pointer;
 `;
+
 export default StyledTag;

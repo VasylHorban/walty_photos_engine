@@ -5,4 +5,5 @@ const StyledWrapper = styled.div`
   z-index: 10;
   font-size: 1.2rem;
 `;
+
 export default StyledWrapper;
