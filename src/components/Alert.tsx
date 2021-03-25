@@ -3,7 +3,10 @@ import { Alert as AlertB } from 'react-bootstrap';
 
 import { AlertWrapper } from '../styled';
 
-const Alert = ({ text }) => (
+type Props = {
+  text : string
+}
+const Alert : React.FC<Props> = ({ text }) => (
   <AlertWrapper>
     <AlertB variant="warning">{text}</AlertB>
   </AlertWrapper>

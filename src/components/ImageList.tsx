@@ -6,13 +6,15 @@ import { requestPhotos } from '../redux/ducks/search';
 import { hideAlert, setIsFetching } from '../redux/ducks/app';
 import { Alert } from './index';
 import { StyledCol, StyledCard, StyledLink } from '../styled';
+import { useTypedSelector } from '../hooks';
 
-const ImageList = ({ tags }) => {
+type Props = {
+  tags : string
+}
+const ImageList : React.FC<Props> = ({ tags }) => {
   const [isSendRequest, setSendRequest] = useState(true);
-  const photos = useSelector((state) => state.search.photos);
-  const isFetching = useSelector((state) => state.app.isFetching);
-  const isAlert = useSelector((state) => state.app.isAlert);
-  const alertText = useSelector((state) => state.app.alertText);
+  const photos = useTypedSelector((state) => state.search.photos);
+  const {isFetching, isAlert, alertText} = useTypedSelector((state) => state.app);
   const dispatch = useDispatch();
 
   const onScrollHandler = (event) => {

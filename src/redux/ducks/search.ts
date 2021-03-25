@@ -2,6 +2,8 @@ import { put, select, call } from 'redux-saga/effects';
 
 import { fetchPhotos } from '../../api/fetchPhotos';
 import { setAlertText, setIsFetching, setIsAlert } from './app';
+import { tag, photo } from '../../types';
+import { RooteState } from './index'
 
 const SET_PHOTOS = 'SEARCH/SET_PHOTOS';
 const SET_INPUT = 'SEARCH/SET_INPUT';
@@ -11,7 +13,16 @@ const SET_TOTAL_COUNT = 'SEARCH/SET_TOTAL_COUNT';
 const CLEAN_SEARCH = 'SEARCH/CLEAN_SEARCH';
 export const REQUEST_PHOTOS = 'SEARCH/REQUEST_PHOTOS';
 
-const initialState = {
+type state = {
+  inputValue: string
+  totalCount: number
+  currentPage: number
+  photos: photo[]
+  tagStorage: tag[]
+
+}
+
+const initialState : state = {
   inputValue: '',
   totalCount: 0,
   currentPage: 0,
@@ -19,7 +30,16 @@ const initialState = {
   tagStorage: [],
 };
 
-const searchReducer = (state = initialState, action) => {
+type actionType =
+  | requestPhotosType
+  | setTagStorageType
+  | setPhotosType
+  | setCurrentPageType
+  | setTotalCountType
+  | setInputType
+  | cleanSearchType;
+
+const searchReducer = (state = initialState, action : actionType): state => {
   switch (action.type) {
     case SET_PHOTOS:
       return { ...state, photos: [...state.photos, ...action.photos] };
@@ -47,27 +67,65 @@ const searchReducer = (state = initialState, action) => {
   }
 };
 
-export const requestPhotos = (tags) => ({ type: REQUEST_PHOTOS, tags });
-export const setTagStorage = (tags) => ({
+type requestPhotosType = {
+  type: typeof REQUEST_PHOTOS;
+  tags: string;
+};
+export const requestPhotos = (tags: string): requestPhotosType => ({
+  type: REQUEST_PHOTOS,
+  tags,
+});
+type setTagStorageType = {
+  type: typeof SET_TAG_STORAGE;
+  tags: tag;
+};
+export const setTagStorage = (tags: string): setTagStorageType => ({
   type: SET_TAG_STORAGE,
   tags: {
     text: tags.split('+').join(' '),
     id: new Date().getTime(),
   },
 });
-export const setPhotos = (photos) => ({ type: SET_PHOTOS, photos });
-export const setCurrentPage = (currentPage) => ({
+type setPhotosType = {
+  type: typeof SET_PHOTOS;
+  photos: any[];
+};
+export const setPhotos = (photos: any[]): setPhotosType => ({
+  type: SET_PHOTOS,
+  photos,
+});
+
+type setCurrentPageType = {
+  type: typeof SET_CURRENT_PAGE;
+  currentPage: number;
+};
+export const setCurrentPage = (currentPage: number): setCurrentPageType => ({
   type: SET_CURRENT_PAGE,
   currentPage,
 });
-export const setTotalCount = (totalCount) => ({
+
+type setTotalCountType = {
+  type: typeof SET_TOTAL_COUNT;
+  totalCount: number;
+};
+export const setTotalCount = (totalCount: number): setTotalCountType => ({
   type: SET_TOTAL_COUNT,
   totalCount,
 });
-export const setInput = (value) => ({ type: SET_INPUT, value });
-export const cleanSearch = () => ({ type: CLEAN_SEARCH });
 
-export function* photosRequest(action) {
+type setInputType = {
+  type: typeof SET_INPUT;
+  value: string;
+};
+export const setInput = (value: string): setInputType => ({
+  type: SET_INPUT,
+  value,
+});
+
+type cleanSearchType = { type: typeof CLEAN_SEARCH };
+export const cleanSearch = (): cleanSearchType => ({ type: CLEAN_SEARCH });
+
+export function* photosRequest(action : requestPhotosType ) {
   try {
     const state = yield select();
     const page = state.search.currentPage + 1;

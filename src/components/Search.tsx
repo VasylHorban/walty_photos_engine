@@ -1,20 +1,21 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { ChangeEvent, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
+import { useTypedSelector } from '../hooks';
 import { cleanSearch, setInput } from '../redux/ducks/search';
 import { StyledForm, StyledButton } from '../styled';
 import { LastSearch } from './index';
 
-const Search = () => {
-  const inputValue = useSelector((state) => state.search.inputValue);
+const Search: React.FC = () => {
+  const inputValue = useTypedSelector((state) => state.search.inputValue);
   const dispatch = useDispatch();
 
-  const generateAddressBar = () => {
+  const generateAddressBar = () : string => {
     let tags = inputValue !== '' ? inputValue : 'yellow flowers';
     return '/img/' + tags.split(' ').join('+');
   };
-  const onChangeHandler = (event) => {
+  const onChangeHandler = (event : ChangeEvent<HTMLInputElement>) : void => {
     dispatch(setInput(event.target.value));
   };
 
