@@ -17,7 +17,8 @@ const ImageList : React.FC<Props> = ({ tags }) => {
   const {isFetching, isAlert, alertText} = useTypedSelector((state) => state.app);
   const dispatch = useDispatch();
 
-  const onScrollHandler = (event) => {
+  
+const onScrollHandler = (event : React.UIEvent<HTMLDocument>) : void => {
     let page = event.target.documentElement;
     if (
       page.scrollHeight - (page.scrollTop + window.innerHeight) < 100 &&
