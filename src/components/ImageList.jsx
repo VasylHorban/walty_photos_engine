@@ -1,25 +1,64 @@
-import React from "react";
-import { Card, Row } from "react-bootstrap";
-import StyledCol from "./../styled/ImageList/StyledCol";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Row, Button } from 'react-bootstrap';
 
-const ImageList = () => (
-  <Row>
-    <StyledCol lg={4} md={6} sm={12}>
-      <Card>
-        <Card.Img src="https://dummyimage.com/600x400/ebe6eb/959ade.jpg&text=mock+img" />
-      </Card>
-    </StyledCol>
-    <StyledCol lg={4} md={6} sm={12}>
-      <Card>
-        <Card.Img src="https://dummyimage.com/600x400/ebe6eb/959ade.jpg&text=mock+img" />
-      </Card>
-    </StyledCol>
-    <StyledCol lg={4} md={6} sm={12}>
-      <Card>
-        <Card.Img src="https://dummyimage.com/600x400/ebe6eb/959ade.jpg&text=mock+img" />
-      </Card>
-    </StyledCol>
-  </Row>
-);
+import { requestPhotos } from '../redux/ducks/search';
+import { hideAlert, setIsFetching } from '../redux/ducks/app';
+import { Alert } from './index';
+import { StyledCol, StyledCard, StyledLink } from '../styled';
+
+const ImageList = ({ tags }) => {
+  const [isSendRequest, setSendRequest] = useState(true);
+  const photos = useSelector((state) => state.search.photos);
+  const isFetching = useSelector((state) => state.app.isFetching);
+  const isAlert = useSelector((state) => state.app.isAlert);
+  const alertText = useSelector((state) => state.app.alertText);
+  const dispatch = useDispatch();
+
+  const onScrollHandler = (event) => {
+    let page = event.target.documentElement;
+    if (
+      page.scrollHeight - (page.scrollTop + window.innerHeight) < 100 &&
+      !isFetching
+    ) {
+      dispatch(setIsFetching(true));
+      setSendRequest(true);
+    }
+  };
+
+  useEffect(() => {
+    if (isAlert) dispatch(hideAlert());
+  }, [isAlert]);
+
+  useEffect(() => {
+    document.addEventListener('scroll', onScrollHandler);
+    return () => {
+      document.removeEventListener('scroll', onScrollHandler);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isSendRequest) dispatch(requestPhotos(tags));
+    setSendRequest(false);
+  }, [isSendRequest]);
+
+  return (
+    <>
+      {isAlert && <Alert text={alertText} />}
+      <StyledLink to="/home">
+        <Button>home page</Button>
+      </StyledLink>
+      <Row>
+        {photos.map((photo, index) => (
+          <StyledCol key={index} lg={4} md={6} sm={12}>
+            <StyledCard>
+              <StyledCard.Img src={photo.webformatURL} />
+            </StyledCard>
+          </StyledCol>
+        ))}
+      </Row>
+    </>
+  );
+};
 
 export default ImageList;

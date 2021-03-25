@@ -1,5 +1,6 @@
-import LastSearch from "./LastSearch";
-import Search from "./Search";
-import ImageList from "./ImageList";
+import Search from './Search';
+import ImageList from './ImageList';
+import Alert from './Alert';
+import LastSearch from './LastSearch';
 
-export { ImageList, Search, LastSearch };
+export { ImageList, Search, Alert, LastSearch };
