@@ -1,14 +1,15 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useTypedSelector } from '../hooks';
 
 import { setInput } from '../redux/ducks/search';
 import { LastSearchWrapper, StyledTag } from '../styled';
 
-const LastSearch = () => {
-  const tags = useSelector((state) => state.search.tagStorage);
+const LastSearch : React.FC = () => {
+  const tags = useTypedSelector((state) => state.search.tagStorage);
   const dispatch = useDispatch();
 
-  const onclickHandler = (tags) => {
+  const onclickHandler = (tags :string) : void => {
     dispatch(setInput(tags));
   };
 

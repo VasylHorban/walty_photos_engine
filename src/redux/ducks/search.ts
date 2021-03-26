@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, select, call } from 'redux-saga/effects';
 
 import { fetchPhotos } from '../../api/fetchPhotos';
@@ -13,22 +14,16 @@ const SET_TOTAL_COUNT = 'SEARCH/SET_TOTAL_COUNT';
 const CLEAN_SEARCH = 'SEARCH/CLEAN_SEARCH';
 export const REQUEST_PHOTOS = 'SEARCH/REQUEST_PHOTOS';
 
-type state = {
-  inputValue: string
-  totalCount: number
-  currentPage: number
-  photos: photo[]
-  tagStorage: tag[]
 
-}
-
-const initialState : state = {
+const initialState  = {
   inputValue: '',
   totalCount: 0,
   currentPage: 0,
-  photos: [],
-  tagStorage: [],
+  photos: [] as Array<photo>,
+  tagStorage: [] as Array<tag>,
 };
+
+type state = typeof initialState;
 
 type actionType =
   | requestPhotosType

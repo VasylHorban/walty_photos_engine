@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
-import { ImageList, Search } from './components/index.js';
+import { ImageList, Search } from './components/index';
 
 const App = () => (
   <Container>

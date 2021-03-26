@@ -18,8 +18,10 @@ const ImageList : React.FC<Props> = ({ tags }) => {
   const dispatch = useDispatch();
 
   
-const onScrollHandler = (event : React.UIEvent<HTMLDocument>) : void => {
-    let page = event.target.documentElement;
+const onScrollHandler = (event : React.UIEvent<HTMLElement>) => {
+    event.stopPropagation();
+    console.log(event)
+    let page = event.currentTarget;
     if (
       page.scrollHeight - (page.scrollTop + window.innerHeight) < 100 &&
       !isFetching
@@ -34,9 +36,9 @@ const onScrollHandler = (event : React.UIEvent<HTMLDocument>) : void => {
   }, [isAlert]);
 
   useEffect(() => {
-    document.addEventListener('scroll', onScrollHandler);
+    window.addEventListener('scroll',(event) => {onScrollHandler(event) } );
     return () => {
-      document.removeEventListener('scroll', onScrollHandler);
+      window.removeEventListener('scroll', (event) => {onScrollHandler(event)} );
     };
   }, []);
 
