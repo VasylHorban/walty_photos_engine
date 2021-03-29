@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Button } from 'react-bootstrap';
 
@@ -11,36 +11,30 @@ import { useTypedSelector } from '../hooks';
 type Props = {
   tags : string
 }
-const ImageList : React.FC<Props> = ({ tags }) => {
+const ImageList: React.FC<Props>= ({ tags }) => {
   const [isSendRequest, setSendRequest] = useState(true);
   const photos = useTypedSelector((state) => state.search.photos);
-  const {isFetching, isAlert, alertText} = useTypedSelector((state) => state.app);
+  const { isFetching, isAlert, alertText } = useTypedSelector(
+    (state) => state.app
+  );
+  const observer = useRef(null);
   const dispatch = useDispatch();
-
   
-const onScrollHandler = (event : React.UIEvent<HTMLElement>) => {
-    event.stopPropagation();
-    console.log(event)
-    let page = event.currentTarget;
-    if (
-      page.scrollHeight - (page.scrollTop + window.innerHeight) < 100 &&
-      !isFetching
-    ) {
-      dispatch(setIsFetching(true));
-      setSendRequest(true);
-    }
-  };
+  const lastElementRef = useCallback((node) => {
+    if(isFetching) return;
+    if(observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if(entries[0].isIntersecting) {
+        dispatch(setIsFetching(true));
+        setSendRequest(true);
+      }
+    })
+    if(node) observer.current.observe(node)
+  }, [isFetching]);
 
   useEffect(() => {
     if (isAlert) dispatch(hideAlert());
   }, [isAlert]);
-
-  useEffect(() => {
-    window.addEventListener('scroll',(event) => {onScrollHandler(event) } );
-    return () => {
-      window.removeEventListener('scroll', (event) => {onScrollHandler(event)} );
-    };
-  }, []);
 
   useEffect(() => {
     if (isSendRequest) dispatch(requestPhotos(tags));
@@ -54,13 +48,21 @@ const onScrollHandler = (event : React.UIEvent<HTMLElement>) => {
         <Button>home page</Button>
       </StyledLink>
       <Row>
-        {photos.map((photo, index) => (
-          <StyledCol key={index} lg={4} md={6} sm={12}>
-            <StyledCard>
-              <StyledCard.Img src={photo.webformatURL} />
-            </StyledCard>
-          </StyledCol>
-        ))}
+        {photos.map((photo, index) => {
+          if (photos.length === index + 1) {
+             return <StyledCol ref ={lastElementRef} key={index} lg={4} md={6} sm={12}>
+                <StyledCard>
+                  <StyledCard.Img src={photo.webformatURL} />
+                </StyledCard>
+              </StyledCol>
+          } else {
+           return <StyledCol key={index} lg={4} md={6} sm={12}>
+              <StyledCard>
+                <StyledCard.Img src={photo.webformatURL} />
+              </StyledCard>
+            </StyledCol>;
+          }
+        })}
       </Row>
     </>
   );
