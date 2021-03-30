@@ -8,4 +8,4 @@ export const rootReducer = combineReducers({
   app: appReducer,
 });
 
-export type RooteState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof rootReducer>;

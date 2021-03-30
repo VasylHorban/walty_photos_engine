@@ -1,6 +1,6 @@
 export type tag = {
-  text: string;
-  id: number;
+  text: string
+  id: number
 };
 
 export type photo = {
@@ -27,3 +27,10 @@ export type photo = {
   user: string
   userImageURL: string
 };
+
+export type payload = {
+  hits : Array<photo>
+  total : number
+  totalHits : number
+}
+

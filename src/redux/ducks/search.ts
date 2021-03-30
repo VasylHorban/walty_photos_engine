@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { put, select, call } from 'redux-saga/effects';
 
 import { fetchPhotos } from '../../api/fetchPhotos';
 import { setAlertText, setIsFetching, setIsAlert } from './app';
-import { tag, photo } from '../../types';
-import { RooteState } from './index'
+import { tag, photo, payload } from '../../types';
+import { RootState } from './index'
 
 const SET_PHOTOS = 'SEARCH/SET_PHOTOS';
 const SET_INPUT = 'SEARCH/SET_INPUT';
@@ -83,9 +82,9 @@ export const setTagStorage = (tags: string): setTagStorageType => ({
 });
 type setPhotosType = {
   type: typeof SET_PHOTOS;
-  photos: any[];
+  photos: Array<photo>;
 };
-export const setPhotos = (photos: any[]): setPhotosType => ({
+export const setPhotos = (photos: Array<photo>): setPhotosType => ({
   type: SET_PHOTOS,
   photos,
 });
@@ -122,7 +121,7 @@ export const cleanSearch = (): cleanSearchType => ({ type: CLEAN_SEARCH });
 
 export function* photosRequest(action : requestPhotosType ) {
   try {
-    const state = yield select();
+    const state : RootState = yield select();
     const page = state.search.currentPage + 1;
     const totalCount = state.search.totalCount;
     if (Math.ceil(totalCount / 20) < page && totalCount !== 0) {
@@ -131,7 +130,7 @@ export function* photosRequest(action : requestPhotosType ) {
       console.log('No more photos');
       yield put(setIsAlert(true));
     } else {
-      const payload = yield call(fetchPhotos, action.tags, page);
+      const payload : payload = yield call(fetchPhotos, action.tags, page);
       if (payload.hits.length === 0) {
         //when there are no matches
         yield put(setAlertText('There are no photos for this match'));
