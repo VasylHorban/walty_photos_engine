@@ -8,7 +8,7 @@ export const HIDE_ALERT = 'APP/HIDE_ALERT';
 const initialState = {
   isFetching: false,
   isAlert: false,
-  alertText: '',
+  text: '',
 };
 
 type stateType = typeof initialState;
@@ -19,7 +19,7 @@ const appReducer = (state = initialState, action : actionType) : stateType  => {
     case SET_ISFETHING:
       return { ...state, isFetching: action.isFetching };
     case SET_ALERT_TEXT:
-      return { ...state, alertText: action.alertText };
+      return { ...state, text: action.text };
     case SET_ISALERT:
       return { ...state, isAlert: action.isAlert };
     default:
@@ -52,11 +52,11 @@ export const hideAlert = () : hideAlertType => ({ type: HIDE_ALERT });
 
 type setAlertTextType = {
   type: typeof SET_ALERT_TEXT
-  alertText : string
+  text : string
 };
-export const setAlertText = (alertText : string) : setAlertTextType  => ({
+export const setAlertText = (text : string) : setAlertTextType  => ({
   type: SET_ALERT_TEXT,
-  alertText,
+  text,
 });
 
 export function* hidingAlert() {
