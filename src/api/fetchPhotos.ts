@@ -6,8 +6,10 @@ export const fetchPhotos = async (tags: string, page: number): Promise<payload> 
     const response = await fetch(
       `https://pixabay.com/api/?key=${key}&q=${tags}&imagde_type=photo&page=${page}`
     );
+    if (!response.ok) throw new Error(response.statusText)
+ 
     console.log(response)
-    return await response.json();
+    return response.json() as Promise<payload>
   } catch (err) {
     throw err;
   }
