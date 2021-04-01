@@ -2,10 +2,10 @@ import React, { ChangeEvent, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
-import { useTypedSelector } from '../hooks';
-import { cleanSearch, setInput } from '../redux/ducks/search';
-import { StyledForm, StyledButton } from '../styled';
-import { LastSearch } from './index';
+import { useTypedSelector } from '../../hooks';
+import { cleanSearch, setInput } from '../../redux/ducks/search';
+import { StyledForm, StyledButton } from '../../styled';
+import { LastSearch } from '../index';
 
 const Search: React.FC = () => {
   const input = useTypedSelector((state) => state.search.inputValue);

@@ -1,8 +1,8 @@
 import { put, delay } from 'redux-saga/effects';
 
-const SET_ISFETHING = 'APP/SET_ISFETHING';
-const SET_ALERT_TEXT = 'APP/SET_ALERT_TEXT';
-const SET_ISALERT = 'APP/SET_ISALERT';
+export const SET_ISFETCHING = 'APP/SET_ISFETCHING';
+export const SET_ALERT_TEXT = 'APP/SET_ALERT_TEXT';
+export const SET_ISALERT = 'APP/SET_ISALERT';
 export const HIDE_ALERT = 'APP/HIDE_ALERT';
 
 const initialState = {
@@ -16,7 +16,7 @@ type actionType = setIsFetchingType | setIsAlertType | hideAlertType | setAlertT
 
 const appReducer = (state = initialState, action : actionType) : stateType  => {
   switch (action.type) {
-    case SET_ISFETHING:
+    case SET_ISFETCHING:
       return { ...state, isFetching: action.isFetching };
     case SET_ALERT_TEXT:
       return { ...state, text: action.text };
@@ -28,11 +28,11 @@ const appReducer = (state = initialState, action : actionType) : stateType  => {
 };
 
 type setIsFetchingType = {
-  type: typeof SET_ISFETHING
+  type: typeof SET_ISFETCHING
   isFetching : boolean
 };
 export const setIsFetching = (isFetching : boolean) : setIsFetchingType => ({
-  type: SET_ISFETHING,
+  type: SET_ISFETCHING,
   isFetching,
 });
 

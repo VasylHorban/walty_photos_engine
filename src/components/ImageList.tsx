@@ -15,7 +15,7 @@ type Props = {
 const ImageList: React.FC<Props> = ({ tags }) => {
   const [isSendRequest, setSendRequest] = useState(true);
   const photos = useTypedSelector(state => state.search.photos);
-  const { isFetching, isAlert, alertText } = useTypedSelector(state => state.app);
+  const { isFetching, isAlert, text } = useTypedSelector(state => state.app);
   const observer = useRef<any>(null);
   const dispatch = useDispatch();
 
@@ -45,7 +45,7 @@ const ImageList: React.FC<Props> = ({ tags }) => {
 
   return (
     <>
-      {isAlert && <Alert text={alertText} />}
+      {isAlert && <Alert text={text} />}
       <StyledLink to="/home">
         <Button>home page</Button>
       </StyledLink>
