@@ -5,16 +5,16 @@ import { setAlertText, setIsFetching, setIsAlert } from './app';
 import { tag, photo, payload } from '../../types';
 import { RootState } from './index'
 
-const SET_PHOTOS = 'SEARCH/SET_PHOTOS';
-const SET_INPUT = 'SEARCH/SET_INPUT';
-const SET_TAG_STORAGE = 'SEARCH/SET_TAG_STORAGE';
-const SET_CURRENT_PAGE = 'SEARCH/SET_CURRENT_PAGE';
-const SET_TOTAL_COUNT = 'SEARCH/SET_TOTAL_COUNT';
-const CLEAN_SEARCH = 'SEARCH/CLEAN_SEARCH';
+export const SET_PHOTOS = 'SEARCH/SET_PHOTOS';
+export const SET_INPUT = 'SEARCH/SET_INPUT';
+export const SET_TAG_STORAGE = 'SEARCH/SET_TAG_STORAGE';
+export const SET_CURRENT_PAGE = 'SEARCH/SET_CURRENT_PAGE';
+export const SET_TOTAL_COUNT = 'SEARCH/SET_TOTAL_COUNT';
+export const CLEAN_SEARCH = 'SEARCH/CLEAN_SEARCH';
 export const REQUEST_PHOTOS = 'SEARCH/REQUEST_PHOTOS';
 
 
-const initialState  = {
+export const initialState  = {
   inputValue: '',
   totalCount: 0,
   currentPage: 0,
