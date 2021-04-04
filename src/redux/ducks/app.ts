@@ -1,4 +1,4 @@
-import { put, delay } from 'redux-saga/effects';
+import { put, delay, call } from 'redux-saga/effects';
 
 export const SET_ISFETCHING = 'APP/SET_ISFETCHING';
 export const SET_ALERT_TEXT = 'APP/SET_ALERT_TEXT';
@@ -60,7 +60,7 @@ export const setAlertText = (text : string) : setAlertTextType  => ({
 });
 
 export function* hidingAlert() {
-  yield delay(3000);
+  yield delay(3000)
   yield put(setIsAlert(false));
 }
 

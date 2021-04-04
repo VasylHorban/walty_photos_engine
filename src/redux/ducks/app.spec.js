@@ -1,3 +1,4 @@
+import { delay, put } from '@redux-saga/core/effects';
 import appReducer , {
   setIsFetching,
   SET_ISFETCHING,
@@ -7,6 +8,7 @@ import appReducer , {
   SET_ALERT_TEXT,
   HIDE_ALERT,
   hideAlert,
+  hidingAlert
 } from './app';
 
 describe('actions', () => {
@@ -58,8 +60,12 @@ describe('reducer', () => {
   });
 });
 
-// describe('saga', () => {
-//   it('should set isAlert to false after 3s', async()=> {
-    
-//   })
-// });
+describe('saga', () => {
+  const gen = hidingAlert();
+  it('should set delay for 3s', async()=> {
+    expect(gen.next().value).toEqual(delay(3000))
+  })
+  it('should set isAlert to false', async()=> {
+    expect(gen.next().value).toEqual(put(setIsAlert(false)))
+  })
+});

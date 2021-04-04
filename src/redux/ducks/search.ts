@@ -13,7 +13,6 @@ export const SET_TOTAL_COUNT = 'SEARCH/SET_TOTAL_COUNT';
 export const CLEAN_SEARCH = 'SEARCH/CLEAN_SEARCH';
 export const REQUEST_PHOTOS = 'SEARCH/REQUEST_PHOTOS';
 
-
 export const initialState  = {
   inputValue: '',
   totalCount: 0,
@@ -121,9 +120,8 @@ export const cleanSearch = (): cleanSearchType => ({ type: CLEAN_SEARCH });
 
 export function* photosRequest(action : requestPhotosType ) {
   try {
-    const state : RootState = yield select();
-    const page = state.search.currentPage + 1;
-    const totalCount = state.search.totalCount;
+    const totalCount : number = yield select((state: RootState) => state.search.totalCount);
+    const page : number = yield select((state: RootState) => state.search.currentPage + 1);
     if (Math.ceil(totalCount / 20) < page && totalCount !== 0) {
       //when the photos are over
       yield put(setAlertText('No more photos'));
@@ -131,21 +129,7 @@ export function* photosRequest(action : requestPhotosType ) {
       yield put(setIsAlert(true));
     } else {
       const payload : payload = yield call(fetchPhotos, action.tags, page);
-      if (payload.hits.length === 0) {
-        //when there are no matches
-        yield put(setAlertText('There are no photos for this match'));
-        console.log('There are no photos for this match');
-        yield put(setIsAlert(true));
-      } else {
-        if (state.search.totalCount === 0) {
-          //when the first request
-          yield put(setTotalCount(payload.total));
-          yield put(setTagStorage(action.tags));
-        }
-        yield put(setCurrentPage(page));
-        yield put(setPhotos(payload.hits));
-        yield put(setIsFetching(false));
-      }
+      yield call(saveRequestData, {hits : payload.hits , total : payload.total, tags : action.tags, page})
     }
   } catch (err) {
     yield put(setAlertText('Server problem, try again later'));
@@ -153,6 +137,28 @@ export function* photosRequest(action : requestPhotosType ) {
     console.log(err);
     yield put(setIsAlert(true));
     yield put(setIsFetching(false));
+  }
+}
+
+export function* saveRequestData( action : {hits : photo[] , total : number, page : number, tags : string}) {
+  if (action.hits.length === 0) {
+    //when there are no matches
+    yield put(setAlertText('There are no photos for this match'));
+    console.log('There are no photos for this match');
+    yield put(setIsAlert(true));
+  } else {
+    yield call(setFirstRequestData, {tags : action.tags, totalCount : action.total})
+    yield put(setCurrentPage(action.page));
+    yield put(setPhotos(action.hits));
+    yield put(setIsFetching(false));
+  }
+}
+
+export function* setFirstRequestData( action : {tags : string, totalCount : number}) {
+  const totalCount : number = yield select( (state: RootState) => state.search.totalCount )
+  if(totalCount === 0){
+    yield put(setTotalCount(action.totalCount));
+    yield put(setTagStorage(action.tags));
   }
 }
 
