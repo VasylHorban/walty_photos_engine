@@ -1,6 +1,6 @@
 import { payload } from '../types';
 
-export const fetchPhotos = async (tags: string, page: number): Promise<payload> => {
+export let fetchPhotos = async (tags: string, page: number): Promise<payload> => {
   const key = '20731832-d3b8f1ab2a733dd6c7d586e1b';
   try {
     const response = await fetch(

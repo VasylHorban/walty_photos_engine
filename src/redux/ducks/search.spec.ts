@@ -1,7 +1,10 @@
+import { fetchPhotos } from './../../api/fetchPhotos';
 import { put, select, call } from 'redux-saga/effects';
+import { cloneableGenerator } from '@redux-saga/testing-utils';
+
 import { photo } from '../../types';
 import { RootState } from './index';
-
+import { setAlertText, setIsAlert, appActionType } from './app';
 import searchReducer, {
   initialState,
   cleanSearch,
@@ -18,8 +21,10 @@ import searchReducer, {
   SET_PHOTOS,
   REQUEST_PHOTOS,
   requestPhotos,
-  photosRequest
+  photosRequest,
 } from './search';
+import { assert } from 'node:console';
+import { runSaga } from '@redux-saga/core';
 
 describe('actions', () => {
   it('should create an action to clean serach', () => {
@@ -58,13 +63,14 @@ describe('actions', () => {
     expect(setTotalCount(totalCount)).toEqual(expectedAction);
   });
   it(`should create an action to set photos to an empty array`, () => {
-    const photos : Array<photo> = [];
+    const photos: Array<photo> = [];
     const expectedAction = { type: SET_PHOTOS, photos };
     expect(setPhotos(photos)).toEqual(expectedAction);
   });
   it(`should create an action to reques photos`, () => {
-    const expectedAction = { type: REQUEST_PHOTOS };
-    expect(requestPhotos('test')).toEqual(expectedAction);
+    const tags = 'test';
+    const expectedAction = { type: REQUEST_PHOTOS, tags };
+    expect(requestPhotos(tags)).toEqual(expectedAction);
   });
 });
 
@@ -121,7 +127,7 @@ describe('reducer', () => {
       userImageURL: string,
     },
   ];
-  const tags = 'test test'
+  const tags = 'test test';
   it('should add 2 photo', () => {
     const state = { ...initialState };
     const newState = searchReducer(state, setPhotos(photos));
@@ -159,27 +165,105 @@ describe('reducer', () => {
   });
   it(`should set total count to '4'`, () => {
     const count = 4;
-    const state = {...initialState};
+    const state = { ...initialState };
     const newState = searchReducer(state, setTotalCount(count));
     expect(newState.totalCount).toEqual(count);
   });
   it(`should set input value to 'test'`, () => {
-    const state = {...initialState};
+    const state = { ...initialState };
     const newState = searchReducer(state, setInput(string));
     expect(newState.inputValue).toEqual(string);
   });
   it(`shoul add 1 tags object to tag storage`, () => {
-    const state = {...initialState};
+    const state = { ...initialState };
     const newState = searchReducer(state, setTagStorage(tags));
     expect(newState.tagStorage.length).toEqual(1);
-  })
+  });
 });
 
-describe('photosRequest', () => {
-  const action = requestPhotos('test')
-  const gen = photosRequest(action);
-  expect(gen.next().value).toStrictEqual(select((state : RootState) => state.search.totalCount))
+// test('photosRequest', () => {
+//   const action = requestPhotos('test');
+//   const gen = cloneableGenerator(photosRequest)(action);
+//   gen.next();
+//   gen.next(12);
+//   gen.next(13);
+//   test('as', () => {
+//     const clone = gen.clone();
+//     expect(clone.next().value).toEqual(put(setAlertText('No more photos')))
+//     expect(clone.next().value).toEqual(put(setIsAlert(true)))
+//     expect(clone.next().done).toBeTruthy()
+//   })
+//   test('rew', () => {
+//     const clone = gen.clone();
+//     expect(clone.next().value).toEqual(put(setAlertText('No more photos')))
+//     expect(clone.next().value).toEqual(put(setIsAlert(true)))
+//     expect(clone.next().done).toBeTruthy()
+//   })
+// });
 
+// describe('photosRequest', () => {
+//   const action = requestPhotos('test')
+//   const gen = photosRequest(action);
+//   const totalCount = 0
+//   expect(JSON.stringify(gen.next().value)).toStrictEqual(JSON.stringify(select((state : RootState) => state.search.totalCount)))
+//   expect(JSON.stringify(gen.next().value)).toStrictEqual(JSON.stringify(select((state: RootState) => state.search.currentPage + 1)))
+//   it(`when the photos are over it should set alert text to 'test' and set isAlert to 'true'`, () => {
+//     expect(gen.next().value).toEqual(put(setAlertText('test')))
+//   })
+//   it('when the photos are over',()=>{
 
+//   })
+// })
+// describe('photosRequest', () => {
+//   const action = requestPhotos('test');
+//   const gen = photosRequest(action);
+//   gen.next();
+//   gen.next(12); //set  totalCount
+//   gen.next(13); //set page
+//   it(`when the photos are over it should set alert text to 'test' and set isAlert to 'true'`, () => {
+//         expect(gen.next().value).toEqual(put(setAlertText('test')))
+//         expect(gen.next().value).toEqual(put(setIsAlert(true)))
+//         expect(gen.next().done).toBeTruthy()
+//   })
+//   it(`when the photos are over it should set alert text to 'test' and set isAlert to 'true'`, () => {
+//     expect(gen.next().value).toEqual(put(setAlertText('test')))
+//     expect(gen.next().value).toEqual(put(setIsAlert(true)))
+//     expect(gen.next().done).toBeTruthy()
+// })
+// )}
+// test('photosRequest', assert => {
+//     const action = requestPhotos('test');
+//     const gen = cloneableGenerator(photosRequest)(action);
+//     assert.deepEqual(
+//       gen.next(select((state : RootState) => state.search.totalCount))).value,
+//       put(changeUI(color)),
+//       'it should dispatch an action to change the ui'
+//     );
 
+// });
+describe('photosRequest' , () => {
+  const action = requestPhotos('test');
+   it(`it should set alert to 'true' and set alert text to 'No more photos' in case of photos are over`, () => {
+    const dispatchedActions = Array<appActionType>;
+    const expecteDispatchedActions = [setAlertText('No more photos'), setIsAlert(true)]
+      const fakeStore = {
+      getState: () => ({
+        search: { totalCount: 39, currentPage: 2 },
+        app: { isAlert: false, text: '' },
+      }),
+      dispatch: (action: appActionType) => dispatchedActions.push(action),
+    };
+    runSaga(fakeStore, photosRequest, action);
+    expect(dispatchedActions).toEqual(expecteDispatchedActions);
+  });
+  it(`it should request photos and call saveRequestData in case of photos are not over`, () => {
+      fetchPhotos = jest.fn(()=> Promise.resolve([]))
+      const fakeStore = {
+      getState: () => ({
+        search: { totalCount: 41, currentPage: 1 },
+        app: { isAlert: false, text: '' },
+      })    
+      };
+    runSaga(fakeStore, photosRequest, action);
+  });
 })

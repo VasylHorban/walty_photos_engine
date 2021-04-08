@@ -4,6 +4,7 @@ import { fetchPhotos } from '../../api/fetchPhotos';
 import { setAlertText, setIsFetching, setIsAlert } from './app';
 import { tag, photo, payload } from '../../types';
 import { RootState } from './index'
+import {SagaIterator} from 'redux-saga';
 
 export const SET_PHOTOS = 'SEARCH/SET_PHOTOS';
 export const SET_INPUT = 'SEARCH/SET_INPUT';
@@ -118,14 +119,13 @@ export const setInput = (value: string): setInputType => ({
 type cleanSearchType = { type: typeof CLEAN_SEARCH };
 export const cleanSearch = (): cleanSearchType => ({ type: CLEAN_SEARCH });
 
-export function* photosRequest(action : requestPhotosType ) {
+export function* photosRequest(action : requestPhotosType ) : SagaIterator {
   try {
     const totalCount : number = yield select((state: RootState) => state.search.totalCount);
     const page : number = yield select((state: RootState) => state.search.currentPage + 1);
     if (Math.ceil(totalCount / 20) < page && totalCount !== 0) {
       //when the photos are over
       yield put(setAlertText('No more photos'));
-      console.log('No more photos');
       yield put(setIsAlert(true));
     } else {
       const payload : payload = yield call(fetchPhotos, action.tags, page);
@@ -133,14 +133,12 @@ export function* photosRequest(action : requestPhotosType ) {
     }
   } catch (err) {
     yield put(setAlertText('Server problem, try again later'));
-    console.log('Server problem, try again later');
-    console.log(err);
     yield put(setIsAlert(true));
     yield put(setIsFetching(false));
   }
 }
 
-export function* saveRequestData( action : {hits : photo[] , total : number, page : number, tags : string}) {
+export function* saveRequestData( action : {hits : photo[] , total : number, page : number, tags : string}) : SagaIterator {
   if (action.hits.length === 0) {
     //when there are no matches
     yield put(setAlertText('There are no photos for this match'));
@@ -154,7 +152,7 @@ export function* saveRequestData( action : {hits : photo[] , total : number, pag
   }
 }
 
-export function* setFirstRequestData( action : {tags : string, totalCount : number}) {
+export function* setFirstRequestData( action : {tags : string, totalCount : number}) : SagaIterator {
   const totalCount : number = yield select( (state: RootState) => state.search.totalCount )
   if(totalCount === 0){
     yield put(setTotalCount(action.totalCount));

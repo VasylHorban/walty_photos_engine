@@ -12,9 +12,9 @@ const initialState = {
 };
 
 type stateType = typeof initialState;
-type actionType = setIsFetchingType | setIsAlertType | hideAlertType | setAlertTextType;
+export type appActionType = setIsFetchingType | setIsAlertType | hideAlertType | setAlertTextType;
 
-const appReducer = (state = initialState, action : actionType) : stateType  => {
+const appReducer = (state = initialState, action : appActionType) : stateType  => {
   switch (action.type) {
     case SET_ISFETCHING:
       return { ...state, isFetching: action.isFetching };
