@@ -1,10 +1,11 @@
-import { fetchPhotos } from './../../api/fetchPhotos';
 import { put, select, call } from 'redux-saga/effects';
 import { cloneableGenerator } from '@redux-saga/testing-utils';
 
+import { payload } from './../../types/index';
+import * as api from './../../api/fetchPhotos';
 import { photo } from '../../types';
 import { RootState } from './index';
-import { setAlertText, setIsAlert, appActionType } from './app';
+import { setAlertText, setIsAlert, appActionType, setIsFetching } from './app';
 import searchReducer, {
   initialState,
   cleanSearch,
@@ -22,6 +23,7 @@ import searchReducer, {
   REQUEST_PHOTOS,
   requestPhotos,
   photosRequest,
+  saveRequestData
 } from './search';
 import { assert } from 'node:console';
 import { runSaga } from '@redux-saga/core';
@@ -241,12 +243,72 @@ describe('reducer', () => {
 //     );
 
 // });
-describe('photosRequest' , () => {
+describe('photosRequest', () => {
+  const string = 'test';
+  const number = 1010;
+  const photos = [
+    {
+      id: number,
+      pageURL: string,
+      type: string,
+      tags: string,
+      previewURL: string,
+      previewWidth: number,
+      previewHeight: number,
+      webformatURL: string,
+      webformatWidth: number,
+      webformatHeight: number,
+      largeImageURL: string,
+      imageWidth: number,
+      imageHeight: number,
+      imageSize: number,
+      views: number,
+      downloads: number,
+      favorites: number,
+      likes: number,
+      comments: number,
+      user_id: number,
+      user: string,
+      userImageURL: string,
+    },
+    {
+      id: number,
+      pageURL: string,
+      type: string,
+      tags: string,
+      previewURL: string,
+      previewWidth: number,
+      previewHeight: number,
+      webformatURL: string,
+      webformatWidth: number,
+      webformatHeight: number,
+      largeImageURL: string,
+      imageWidth: number,
+      imageHeight: number,
+      imageSize: number,
+      views: number,
+      downloads: number,
+      favorites: number,
+      likes: number,
+      comments: number,
+      user_id: number,
+      user: string,
+      userImageURL: string,
+    },
+  ];
+  const mockPayload: payload = {
+    totalHits: 0,
+    total: 10,
+    hits: [...photos]
+  };
   const action = requestPhotos('test');
-   it(`it should set alert to 'true' and set alert text to 'No more photos' in case of photos are over`, () => {
-    const dispatchedActions = Array<appActionType>;
-    const expecteDispatchedActions = [setAlertText('No more photos'), setIsAlert(true)]
-      const fakeStore = {
+  it(`it should set alert to 'true' and set alert text to 'No more photos' in case of photos are over`, () => {
+    const dispatchedActions: Array<appActionType> = [];
+    const expecteDispatchedActions = [
+      setAlertText('No more photos'),
+      setIsAlert(true),
+    ];
+    const fakeStore = {
       getState: () => ({
         search: { totalCount: 39, currentPage: 2 },
         app: { isAlert: false, text: '' },
@@ -256,14 +318,36 @@ describe('photosRequest' , () => {
     runSaga(fakeStore, photosRequest, action);
     expect(dispatchedActions).toEqual(expecteDispatchedActions);
   });
-  it(`it should request photos and call saveRequestData in case of photos are not over`, () => {
-      fetchPhotos = jest.fn(()=> Promise.resolve([]))
-      const fakeStore = {
-      getState: () => ({
-        search: { totalCount: 41, currentPage: 1 },
-        app: { isAlert: false, text: '' },
-      })    
-      };
-    runSaga(fakeStore, photosRequest, action);
+  it(`it should call request photos and saveRequestData in case of photos are not over`, () => {
+    
+    const gen = photosRequest(action);
+    const page = 1;
+    const nextSagaCallArguments = {hits : mockPayload.hits , total : mockPayload.total, tags : action.tags, page};
+    gen.next(41);
+    gen.next(page);
+    const fetchCall = gen.next(page).value
+    const nextSagaCall = gen.next(nextSagaCallArguments).value
+    expect(fetchCall).toEqual(call(api.fetchPhotos, 'test', page))
+    expect(nextSagaCall).toEqual(call(saveRequestData , nextSagaCallArguments))
+    expect(gen.next().done).toBeTruthy()
   });
-})
+  it(`it should set alert to 'false' and set alert text to 'Server problem, try again later' in case of fail`, () => {
+    const dispatchedActions: Array<appActionType> = [];
+    const expecteDispatchedActions = [
+      setAlertText('Server problem, try again later'),
+      setIsAlert(true),
+      setIsFetching(false)
+    ];
+    const fakeStore = {
+      getState: () => ({
+        search: { totalCount: 39, currentPage: 2 },
+        app: { isAlert: false, text: '' , isFetching : true},
+      }),
+      dispatch: (action: appActionType) => dispatchedActions.push(action),
+    };
+    let fetchPhotos = api.fetchPhotos;
+    fetchPhotos = jest.fn(() => Promise.reject(new Error))
+    runSaga(fakeStore, photosRequest, action);
+    expect(dispatchedActions).toEqual(expecteDispatchedActions);
+  });
+});
